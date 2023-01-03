@@ -78,7 +78,7 @@ loader(messageDiv)
 
 // fetch data from server
 
-    const response = await fetch('https://gigachat.onrender.com/', {
+    const response = await fetch('https://giga-chat-glta.onrender.com', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
