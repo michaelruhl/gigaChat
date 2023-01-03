@@ -89,7 +89,7 @@ loader(messageDiv)
     })
 
     clearInterval(loadInterval)
-    messageDiv.innerHTML = ''
+    messageDiv.innerHTML = " "
 
     if(response.ok) {
         const data = await response.json()
