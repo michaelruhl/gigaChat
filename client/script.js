@@ -1,47 +1,45 @@
-import bot from './assets/duck.jpg'
-import user from './assets/duck.png'
+import bot from './assets/duck.jpg';
+import user from './assets/duck.png';
 
-const form = document.querySelector('form')
-const chatContainer = document.querySelector('#chat_container')
+const form = document.querySelector('form');
+const chatContainer = document.querySelector('#chat_container');
 
-let loadInterval
+let loadInterval;
 
 function loader(element) {
-    element.textContent =''
-    loadInterval = setInterval(() => {
-        element.textContent += '.'
+  element.textContent = '';
+  loadInterval = setInterval(() => {
+    element.textContent += '.';
 
-        if (element.textContent === '.....') {
-            element.textContent = ''
-        }
-    }, 300)
+    if (element.textContent === '.....') {
+      element.textContent = '';
+    }
+  }, 300);
 }
 
-function typeText(element, text)    {
-    let index = 0
+function typeText(element, text) {
+  let index = 0;
 
-    let interval =setInterval(() => {
-
-        if(index < text.length) {
-            element.innerHTML += text.charAt(index)
-            index++
-        } else {
-            clearInterval(interval)
-        }
-    }, 20)
+  let interval = setInterval(() => {
+    if (index < text.length) {
+      element.innerHTML += text.charAt(index);
+      index++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 20);
 }
 
 function generateUniqueId() {
-    const timestamp = Date.now()
-    const randomNumber = Math.random()
-    const hexidecimalString = randomNumber.toString(16)
+  const timestamp = Date.now();
+  const randomNumber = Math.random();
+  const hexidecimalString = randomNumber.toString(16);
 
-    return `id-${timestamp}-${hexidecimalString}`
+  return `id-${timestamp}-${hexidecimalString}`;
 }
 
-function chatStripe (isAi, value, uniqueId) {
-    return (
-`
+function chatStripe(isAi, value, uniqueId) {
+  return `
     <div class="wrapper ${isAi && 'ai'}">
         <div class="chat">
             <div class="profile">
@@ -53,63 +51,62 @@ function chatStripe (isAi, value, uniqueId) {
             <div class="message" id=${uniqueId}>${value}</div>
         </div>
     </div>
-`
-)
+`;
 }
 
 const handleSubmit = async (e) => {
-    e.preventDefault()
+  e.preventDefault();
 
-    const data = new FormData(form)
+  const data = new FormData(form);
 
-    // user's chatStripe
-    chatContainer.innerHTML += chatStripe(false, data.get('prompt'))
+  // user's chatStripe
+  chatContainer.innerHTML += chatStripe(false, data.get('prompt'));
 
-    form.reset()
+  form.reset();
 
-    const uniqueId = generateUniqueId()
+  const uniqueId = generateUniqueId();
 
-chatContainer.innerHTML += chatStripe(true, " ", uniqueId)
-chatContainer.scrollTop = chatContainer.scrollHeight
+  chatContainer.innerHTML += chatStripe(true, ' ', uniqueId);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 
-const messageDiv = document.getElementById(uniqueId)
+  const messageDiv = document.getElementById(uniqueId);
 
-loader(messageDiv)
+  loader(messageDiv);
 
-// fetch data from server
+  // fetch data from server
 
-    const response = await fetch('https://gigachat.onrender.com', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            prompt: data.get('prompt')
-        })
-    })
+  const response = await fetch('https://gigachat.onrender.com', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      prompt: data.get('prompt'),
+    }),
+  });
 
-    clearInterval(loadInterval)
-    messageDiv.innerHTML = " "
+  clearInterval(loadInterval);
+  messageDiv.innerHTML = ' ';
 
-    if(response.ok) {
-        const data = await response.json()
-        const parsedData = data.bot.trim()
+  if (response.ok) {
+    const data = await response.json();
+    const parsedData = data.bot.trim();
 
-        typeText(messageDiv, parsedData)
+    typeText(messageDiv, parsedData);
+  } else {
+    const err = await response.text();
 
-    } else {
-        const err = await response.text()
+    messageDiv.innerHTML = 'Something went wrong..';
 
-        messageDiv.innerHTML = "Something went wrong.."
+    alert(
+      'Hello! gigaChat is currently undergoing maintenance. Please try again later. Check out https://michaelruhlportfolio.vercel.app for more information about Michael Ruhl.'
+    );
+  }
+};
 
-        alert(err)
-    }
-
-}
-
-form.addEventListener('submit', handleSubmit)
+form.addEventListener('submit', handleSubmit);
 form.addEventListener('keyup', (e) => {
-    if (e.keyCode ===13) {
-        handleSubmit(e)
-    }
-})
+  if (e.keyCode === 13) {
+    handleSubmit(e);
+  }
+});
