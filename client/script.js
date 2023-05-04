@@ -98,9 +98,7 @@ const handleSubmit = async (e) => {
 
     messageDiv.innerHTML = 'Something went wrong..';
 
-    alert(
-      'Hello! gigaChat is currently undergoing maintenance. Please try again later. Check out https://michaelruhlportfolio.vercel.app for more information about Michael Ruhl.'
-    );
+    alert(err);
   }
 };
 
